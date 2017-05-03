@@ -5,9 +5,9 @@ class Author
     @name = attrib[:name]
   end
 
-  define_method(:==) do |auth2|
-   self.id == auth2.id
-  end
+  # define_method(:==) do |auth2|
+  #  self.id == auth2.id
+  # end
 
   define_singleton_method(:all) do
     all_authors = []
@@ -34,5 +34,22 @@ class Author
       end
     end
     found
+  end
+
+  define_singleton_method(:auth_update) do |name|
+    found_author = nil;
+    Author.all.each() do |author|
+      if author.name==name
+        found_author = author
+      end
+    end
+
+    if found_author!=nil
+      found_author.id
+    else
+      new_auth = Author.new(:id=>nil, :name=>name)
+      new_auth.save
+      new_auth.id
+    end
   end
 end

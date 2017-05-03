@@ -2,6 +2,7 @@ require('sinatra')
 require('sinatra/reloader')
 require('./lib/book')
 require('./lib/person')
+require('./lib/author')
 require('pry')
 also_reload('lib/**/*.rb')
 require('pg')
@@ -29,7 +30,7 @@ post('/books') do
     })
   new_book.save
   new_auth.save
-  #update
+  new_book.update({:author_ids=>[new_auth.id.to_i]})
   @books = Book.all
   erb(:all_books)
 end
@@ -40,14 +41,22 @@ get('/books/:id') do
 end
 
 patch('/books/:id') do
-  #update existing book off params
   @book = Book.find(params[:id].to_i)
-  erb(:all_books)
+  #passes blank strings into update method
+  @book.update({:title=>params[:update_title], :author_ids=>[Author.auth_update(params[:update_author])]})
+  erb(:one_book)
 end
 
 delete('/books/:id') do
-  #delete book
   @book = Book.find(params[:id].to_i)
+  DB.exec("DELETE FROM authorbook WHERE author_id=#{  params[:author_id]};")
+  erb(:one_book)
+end
+
+delete('/books') do
+  @book = Book.find(params[:id].to_i)
+  @book.delete
+  @books = Book.all
   erb(:all_books)
 end
 
@@ -62,3 +71,14 @@ post('/patrons') do
   @people = Person.all
   erb(:all_people)
 end
+
+get('/patrons/:id') do
+  @person = Person.find(params[:id].to_i)
+  @books = Book.all
+  erb(:one_person)
+end
+
+# get('/books/:id') do
+#   @book = Book.find(params[:id].to_i)
+#   erb(:one_book)
+# end

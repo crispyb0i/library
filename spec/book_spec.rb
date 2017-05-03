@@ -37,8 +37,12 @@ describe(Book) do
     it('returns array of all authors associated with self') do
       book1 = Book.new({:id=>nil, :title=>'Modern Romance', :checkout_id=>0})
       book1.save
-      expect(book1.authors).to(eq(['Aziz Ansari']))
+      author1 = Author.new({:id=>nil, :name=>'Bob Bob'})
+      author1.save
+      book1.update({:author_ids=>[author1.id]})
+      expect(book1.authors).to(eq(['Bob Bob']))
     end
   end
+
 
 end
