@@ -1,0 +1,15 @@
+<h1>All Patrons</h1>
+
+<ul>
+  <% @people.each() do |person| %>
+  <li><a href="/patrons/<%= person.id %>"><%= person.name %></a></li>
+    <% end %>
+</ul>
+
+<h2>Add a new patron</h2>
+
+<form action="/patrons" method="post">
+  <label for="word">New Patron Name</label>
+    <input type="text" name="person_name">
+  <button type="submit">Submit</button>
+</form>
