@@ -37,19 +37,23 @@ class Author
   end
 
   define_singleton_method(:auth_update) do |name|
-    found_author = nil;
-    Author.all.each() do |author|
-      if author.name==name
-        found_author = author
+    if name!=""
+      found_author = nil;
+      Author.all.each() do |author|
+        if author.name==name
+          found_author = author
+        end
       end
-    end
 
-    if found_author!=nil
-      found_author.id
+      if found_author!=nil
+        found_author.id
+      else
+        new_auth = Author.new(:id=>nil, :name=>name)
+        new_auth.save
+        new_auth.id
+      end
     else
-      new_auth = Author.new(:id=>nil, :name=>name)
-      new_auth.save
-      new_auth.id
+      return 0
     end
   end
 end

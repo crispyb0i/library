@@ -22,8 +22,10 @@ class Person
   end
 
   define_method(:save) do
-    result = DB.exec("INSERT INTO people (name) VALUES ('#{@name}') RETURNING id;")
-    @id = result.first.fetch('id').to_i
+    if @name!=""
+      result = DB.exec("INSERT INTO people (name) VALUES ('#{@name}') RETURNING id;")
+      @id = result.first.fetch('id').to_i
+    end
   end
 
   define_singleton_method(:find) do |id|
@@ -57,7 +59,7 @@ class Person
   define_method(:checkin) do |array|
     array.each do |book_id|
       DB.exec("UPDATE books SET person_id ='0' WHERE id=#{book_id};")
-      DB.exec("UPDATE books SET return =null WHERE id=#{book_id};")    
+      DB.exec("UPDATE books SET return =null WHERE id=#{book_id};")
     end
   end
 

@@ -62,15 +62,15 @@ describe(Person) do
 
   describe('#history') do
     it('dsfsgs') do
-      book1 = Book.new({:id=>nil, :title=>'Modern Romance', :checkout_id=>0})
-      book2 = Book.new({:id=>nil, :title=>'Hello Kitty', :checkout_id=>0})
+      book1 = Book.new({:id=>nil, :title=>'Modern Romance'})
+      book2 = Book.new({:id=>nil, :title=>'Hello Kitty'})
       person1 = Person.new({:id=>nil, :name=>'Jacob'})
       book1.save
       book2.save
       person1.save
       person1.checkout([book1.id])
       person1.checkout([book2.id])
-      expect(person1.history).to(eq([book1,book2]))
+      expect(person1.history).to(eq([{'id'=>book1.id.to_s, 'title'=>'Modern Romance', 'person_id'=>person1.id.to_s, 'return'=>book1.return},{'id'=>book2.id.to_s, 'title'=>'Hello Kitty', 'person_id'=>person1.id.to_s, 'return'=>book1.return}]))
     end
   end
 end

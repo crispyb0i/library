@@ -75,7 +75,7 @@ post('/books') do
     })
   new_book.save
   new_auth.save
-  new_book.update({:author_ids=>[new_auth.id.to_i]})
+  new_book.update({:title=>params[:title], :author_ids=>[new_auth.id.to_i]})
   @books = Book.all
   erb(:all_books)
 end
