@@ -8,11 +8,56 @@ also_reload('lib/**/*.rb')
 require('pg')
 
 DB = PG.connect({:dbname => 'library'})
+# DB.exec("DELETE FROM books *;")
+# DB.exec("DELETE FROM people *;")
+# DB.exec("DELETE FROM checkouts *;")
+# DB.exec("DELETE FROM author *;")
+# DB.exec("DELETE FROM authorbook *;")
 
 get('/') do
+  @people = Person.all
   erb(:index)
 end
 
+post('/') do
+  new_person = Person.new({:name=>params[:person_name]})
+  new_person.save
+  @people = Person.all
+  erb(:index)
+end
+
+get('/patrons/:patron_id') do
+  @person = Person.find(params[:patron_id].to_i)
+  @checkouts = @person.all_checkouts
+  @books = Book.all
+  erb(:one_person)
+end
+
+post ('/patrons/:patron_id') do
+  @person = Person.find(params[:patron_id].to_i)
+  @all_checked_books = params.fetch("books_ids",[])
+  @person.checkout(@all_checked_books)
+  @checkouts = @person.all_checkouts
+  @books = Book.all
+  erb(:one_person)
+end
+
+patch ('/patrons/:patron_id') do
+  @person = Person.find(params[:patron_id].to_i)
+  @checkin_books = params.fetch("checkedout_books_ids",[])
+  @person.checkin(@checkin_books)
+  @checkouts = @person.all_checkouts
+  @books = Book.all
+  erb(:one_person)
+end
+
+get('/patrons/:patron_id/history') do
+  @person = Person.find(params[:patron_id].to_i)
+  @history = @person.history
+  erb(:history)
+end
+
+# Librarian views
 get('/books') do
   @books = Book.all
   erb(:all_books)
@@ -37,20 +82,21 @@ end
 
 get('/books/:id') do
   @book = Book.find(params[:id].to_i)
-  erb(:one_book)
+  erb(:one_book_lib)
 end
 
 patch('/books/:id') do
   @book = Book.find(params[:id].to_i)
   #passes blank strings into update method
   @book.update({:title=>params[:update_title], :author_ids=>[Author.auth_update(params[:update_author])]})
-  erb(:one_book)
+  erb(:one_book_lib)
 end
 
 delete('/books/:id') do
   @book = Book.find(params[:id].to_i)
-  DB.exec("DELETE FROM authorbook WHERE author_id=#{  params[:author_id]};")
-  erb(:one_book)
+  DB.exec("DELETE FROM authorbook WHERE author_id=#{params[:author_id]};")
+
+  erb(:one_book_lib)
 end
 
 delete('/books') do
@@ -59,26 +105,3 @@ delete('/books') do
   @books = Book.all
   erb(:all_books)
 end
-
-get('/patrons') do
-  @people = Person.all
-  erb(:all_people)
-end
-
-post('/patrons') do
-  new_person = Person.new({:name=>params[:person_name]})
-  new_person.save
-  @people = Person.all
-  erb(:all_people)
-end
-
-get('/patrons/:id') do
-  @person = Person.find(params[:id].to_i)
-  @books = Book.all
-  erb(:one_person)
-end
-
-# get('/books/:id') do
-#   @book = Book.find(params[:id].to_i)
-#   erb(:one_book)
-# end

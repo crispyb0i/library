@@ -1,5 +1,21 @@
+<div class="container">
+  <h1>Welcome to crispyb0i's Library</h1>
+  <h3>Select your username</h3>
 
-<h1>Welcome to crispyb0i's Library</h1>
+  <!-- <a href="/patrons" class='btn btn-success'>See all patrons</a> -->
+  <ul>
+    <% @people.each() do |person| %>
+    <li><a href="/patrons/<%= person.id %>"><%= person.name %></a></li>
+      <% end %>
+  </ul>
 
-<a href="/books" class='btn btn-success'>See all books</a>
-<a href="/patrons" class='btn btn-success'>See all patrons</a>
+  <h2>Add a new patron</h2>
+
+  <form action="/" method="post">
+    <label for="word">New Patron Name</label>
+      <input type="text" name="person_name">
+    <button type="submit">Submit</button>
+  </form>
+  <br>
+  <a href="/books" class='btn btn-success'>See all books(Librarians Only)</a>
+</div>

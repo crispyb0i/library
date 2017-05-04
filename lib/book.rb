@@ -1,9 +1,10 @@
 class Book
-  attr_accessor(:id, :title, :checkout_id)
+  attr_accessor(:id, :title, :return, :person_id)
   define_method(:initialize) do |attrib|
     @id = attrib[:id]
     @title = attrib[:title]
-    @checkout_id = attrib[:checkout_id]
+    @return = 0;
+    @person_id = attrib[:person_id]
   end
 
   define_method(:==) do |book2|
@@ -17,15 +18,16 @@ class Book
     returned_books.each() do |book|
       id = book["id"].to_i
       title = book["title"]
-      checkout_id = book["checkout_id"]
-      book_rm = Book.new({:id=>id,:title=>title,:checkout_id=>checkout_id})
+      person_id = book["person_id"]
+      book_rm = Book.new({:id=>id,:title=>title,:person_id=>person_id})
       all_books.push(book_rm)
     end
     all_books
   end
 
+  #come back to this
   define_method(:save) do
-    result = DB.exec("INSERT INTO books (title, checkout_id) VALUES ('#{@title}','#{@checkout_id}') RETURNING id;")
+    result = DB.exec("INSERT INTO books (title, person_id) VALUES ('#{@title}','0') RETURNING id;")
     @id = result.first.fetch('id').to_i
   end
 
@@ -65,5 +67,7 @@ class Book
     DB.exec("DELETE FROM authorbook WHERE book_id = #{self.id()};")
     DB.exec("DELETE FROM books WHERE id = #{self.id()};")
   end
+
+
 
 end

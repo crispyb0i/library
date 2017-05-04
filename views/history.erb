@@ -1,0 +1,9 @@
+<h1>Your Checkout History</h1>
+
+<ul>
+  <% @history.each do |book| %>
+  <li><a href='#'><%=book['title']%></a></li>
+  <% end %>
+</ul>
+
+<a href="/patrons/<%= @person.id %>" class='btn btn-danger'>Return</a>

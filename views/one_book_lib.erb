@@ -1,9 +1,9 @@
-<h1><%= @book.title %></h1>
-<% @book.authors.each() do |author| %>
-  <h3><%= author['name'] %></h3>
-<% end %>
-
 <div class="container">
+  <h1><%= @book.title %></h1>
+  <h3>Authors:</h3>
+  <% @book.authors.each() do |author| %>
+    <h4><%= author['name'] %></h4>
+  <% end %>
   <h2>Update this book</h2>
   <form action="/books/<%= @book.id %>" method="post">
     <input type="hidden" name="_method" value="patch">
@@ -39,6 +39,6 @@
     </select>
     <button type="submit">Remove author</button>
   </form>
+  <br>
+  <a href="/" class='btn btn-success'>Return To Home</a>
 </div>
-<br>
-<a href="/" class='btn btn-success'>Return To Home</a>

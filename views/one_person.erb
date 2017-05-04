@@ -1,8 +1,33 @@
 <h1><%= @person.name %></h1>
 
-<ul>
-  <% @books.each do |book|%>
-  <li><a href="/books/<%= book.id %>" value='test'><%=book.title%></a></li>
-  <% end %>
+<div class="container">
+  <h3>Your Checkouts</h3>
+  <form action="/patrons/<%= @person.id %>" method="post">
+    <input type="hidden" name="_method" value="patch">
+    <% @checkouts.each() do |book| %>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="checkedout_books_ids[]" value="<%= book['id'] %>"><%= book['title'] %> please return by <%= book['return'] %>
+        </label>
+      </div>
+    <% end %>
+    <button type="submit" name="button" class="btn btn-danger">Check In</button>
+  </form>
 
-</ul>
+  <h3>Available Books</h3>
+  <form action="/patrons/<%= @person.id %>" method="post">
+    <% @books.each() do |book| %>
+      <% if book.person_id == '0'%>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="books_ids[]" value="<%= book.id() %>"><%= book.title() %>
+          </label>
+        </div>
+      <% end %>
+    <% end %>
+    <button type="submit" name="button" class="btn btn-danger">Check Out</button>
+  </form>
+  <br>
+  <a href="/patrons/<%=@person.id%>/history" class='btn btn-danger'>Your Checkout History</a>
+  <a href="/" class='btn btn-danger'>Return To Home</a>  
+</div>
